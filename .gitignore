@@ -73,3 +73,6 @@ Testing/
 # Markdown files
 *.md
 !README.md
+
+# Compte rendu
+Compte_rendu/
