@@ -1,23 +1,26 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
+
+#include <cfloat>
 #include "Vec3.h"
 #include "Ray.h"
 #include "Plane.h"
 
 struct RayTriangleIntersection{
     bool intersectionExists;
-    float t;
+    float t = FLT_MAX ;
     float w0,w1,w2;
     unsigned int tIndex;
     Vec3 intersection;
     Vec3 normal;
+    Vec3 centroid;
 };
 
 class Triangle {
-private:
-    Vec3 m_c[3] , m_normal;
-    float area;
 public:
+    Vec3 m_c[3] , m_normal, centroid;
+    float area;
+
     Triangle() {}
     Triangle( Vec3 const & c0 , Vec3 const & c1 , Vec3 const & c2 ) {
         m_c[0] = c0;

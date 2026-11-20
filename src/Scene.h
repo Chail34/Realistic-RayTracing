@@ -147,7 +147,6 @@ public:
             Vec3 viewDirection = ray.direction() ;
             Vec3 lightPosition = lights[0].pos ;
             float n1 = 1.0f ;
-            float n2 = 2.5f ;
 
             if(intersection.intersectionExists){
 
@@ -180,7 +179,7 @@ public:
 
                     // Cas Verre
                     if(objectMaterial.type == Material_Glass && NRemainingBounces > 1){
-                        Vec3 refractionDirection = refraction(ray, normal, n1, n2);
+                        Vec3 refractionDirection = refraction(ray, normal, n1, objectMaterial.index_medium);
                         // Si la refraction est dans le bon sens on l'applique
                         if(refractionDirection.squareLength() > 0.0f){
                             Vec3 refractionPoint = intersectionPoint + refractionDirection * epsilon ;
@@ -209,7 +208,7 @@ public:
 
                     // Cas Verre
                     if(objectMaterial.type == Material_Glass && NRemainingBounces > 1){
-                        Vec3 refractionDirection = refraction(ray, normal, n1, n2);
+                        Vec3 refractionDirection = refraction(ray, normal, n1, objectMaterial.index_medium);
                         // Si la refraction est dans le bon sens on l'applique
                         if(refractionDirection.squareLength() > 0.0f){
                             Vec3 refractionPoint = intersectionPoint + refractionDirection * epsilon ;
@@ -228,7 +227,6 @@ public:
         }else{
             return Vec3(0.0f, 0.0f, 0.0f) ;
         }
-        
     }
 
     Vec3 rayTrace( Ray const & rayStart ) 
@@ -556,10 +554,10 @@ Material materialOf(RaySceneIntersection raySceneIntersection)
 
             spheres.resize( spheres.size() + 1 );
             Sphere & s = spheres[spheres.size() - 1];
-            s.m_center = Vec3(1.0, -1.25, 0.5);
+            s.m_center = Vec3(1.0, 1.25, 0.5);
             s.m_radius = 0.75f;
             s.build_arrays();
-            s.material.type = Material_Mirror;
+            s.material.type = Material_Glass;
             s.material.diffuse_material = Vec3( 1.,0.,0. );
             s.material.specular_material = Vec3( 1.,0.,0. );
             s.material.shininess = 16;
@@ -571,10 +569,10 @@ Material materialOf(RaySceneIntersection raySceneIntersection)
         { //MIRRORED Sphere
             spheres.resize( spheres.size() + 1 );
             Sphere & s = spheres[spheres.size() - 1];
-            s.m_center = Vec3(-1.0, -1.25, -0.5);
+            s.m_center = Vec3(-1.0, 0.25, -0.5);
             s.m_radius = 0.75f;
             s.build_arrays();
-            s.material.type = Material_Glass;
+            s.material.type = Material_Mirror;
             s.material.diffuse_material = Vec3( 1.,1.,1. );
             s.material.specular_material = Vec3(  1.,1.,1. );
             s.material.shininess = 16;

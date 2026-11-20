@@ -8,6 +8,7 @@
 #include "Ray.h"
 #include "Triangle.h"
 #include "Material.h"
+#include "BVH.h"
 
 #include <GL/glut.h>
 
@@ -104,6 +105,8 @@ public:
 
     Material material;
 
+    BVH bvh ;
+
     void loadOFF (const std::string & filename);
     void recomputeNormals ();
     void centerAndScaleToUnit ();
@@ -117,6 +120,7 @@ public:
         build_normals_array();
         build_UVs_array();
         build_triangles_array();
+        build_bvh();
     }
 
 
@@ -198,35 +202,42 @@ public:
 
     }
 
-    RayTriangleIntersection intersect( Ray const & ray ) const {
-        RayTriangleIntersection closestIntersection;
-        closestIntersection.t = FLT_MAX;
-        // Note :
-        // Creer un objet Triangle pour chaque face
-        // Vous constaterez des problemes de précision
-        // solution : ajouter un facteur d'échelle lors de la création du Triangle : float triangleScaling = 1.000001;
-
-        // const float triangleScaling = 1.000001;
-        Triangle triangle ;
-        RayTriangleIntersection triangleIntersection ;
-
-        // Parcours de tous les triangles
-        for(long unsigned int i = 0 ; i < triangles.size() ; i++){
-            triangle = Triangle(
-                vertices[triangles[i][0]].position,
-                vertices[triangles[i][1]].position,
-                vertices[triangles[i][2]].position
-            );
-
-            triangleIntersection = triangle.getIntersection(ray) ;
-
-            if(triangleIntersection.intersectionExists && triangleIntersection.t > 0.f && triangleIntersection.t < closestIntersection.t){
-                closestIntersection = triangleIntersection ;
-                closestIntersection.tIndex = i ;
-                closestIntersection.intersectionExists = true ;
-            }
-
+    void build_bvh(){
+        std::vector<Triangle> BVHTriangles ;
+        for(MeshTriangle & t : triangles){
+            Triangle triangle ;
+            triangle.m_c[0] = vertices[t[0]].position ;
+            triangle.m_c[1] = vertices[t[1]].position ;
+            triangle.m_c[2] = vertices[t[2]].position ;
+            BVHTriangles.push_back(triangle);
         }
+        bvh.build(BVHTriangles);
+    }
+
+    RayTriangleIntersection intersect( const Ray & ray ) const {
+
+        // Initialisation de l'intersection
+        RayTriangleIntersection closestIntersection;
+        closestIntersection.intersectionExists = false ;
+        closestIntersection.t = FLT_MAX;
+
+        // Calcul de la collision avec l'arbre BVH
+        Collision collision = bvh.intersect(ray);
+        if(!collision.exists) return closestIntersection ;
+
+        // Application de l'intersection
+        const Triangle & triangle = bvh.triangles[collision.triangleIndex] ;
+        closestIntersection.intersectionExists = true ;
+        closestIntersection.tIndex = collision.triangleIndex ;
+        closestIntersection.t = collision.t ;
+        closestIntersection.intersection = ray.origin() + collision.t * ray.direction() ;
+        closestIntersection.normal = Vec3::cross(triangle.m_c[1] - triangle.m_c[0], triangle.m_c[2] - triangle.m_c[0]) ;
+        closestIntersection.normal.normalize();
+        closestIntersection.w0 = collision.w0 ;
+        closestIntersection.w1 = collision.w1 ;
+        closestIntersection.w2 = collision.w2 ;
+
+        
 
         return closestIntersection;
     }
