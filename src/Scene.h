@@ -602,12 +602,81 @@ Material materialOf(RaySceneIntersection raySceneIntersection)
         {
             meshes.resize( meshes.size() + 1 );
             Mesh & mesh = meshes[meshes.size() - 1];
-            mesh.loadOFF( "data/suzanne.off" );
+            mesh.loadOFF( "data/mario.off" );
             mesh.centerAndScaleToUnit();
+            mesh.scale(Vec3(1.5f, 1.5f, 1.5f));
+            mesh.translate(Vec3(0.0f, -0.6f, 0.0f));
             mesh.build_arrays();
             mesh.material.diffuse_material = Vec3( 0.8,0.8,0.8 );
             mesh.material.specular_material = Vec3( 0.8,0.8,0.8 );
+            mesh.material.ambient_material = Vec3(1.0, 0.0, 0.0);
             mesh.material.shininess = 20;
+        }
+
+        { //Back Wall
+            squares.resize( squares.size() + 1 );
+            Square & s = squares[squares.size() - 1];
+            s.setQuad(Vec3(-1., -1., 0.), Vec3(1., 0, 0.), Vec3(0., 1, 0.), 2., 2.);
+            s.scale(Vec3(2., 2., 1.));
+            s.translate(Vec3(0., 0., -2.));
+            s.build_arrays();
+            s.material.diffuse_material = Vec3( 1.,1.,1. );
+            s.material.specular_material = Vec3( 1.,1.,1. );
+            s.material.shininess = 16;
+            // s.material.type = Material_Mirror ;
+        }
+
+        { //Left Wall
+
+            squares.resize( squares.size() + 1 );
+            Square & s = squares[squares.size() - 1];
+            s.setQuad(Vec3(-1., -1., 0.), Vec3(1., 0, 0.), Vec3(0., 1, 0.), 2., 2.);
+            s.scale(Vec3(2., 2., 1.));
+            s.translate(Vec3(0., 0., -2.));
+            s.rotate_y(90);
+            s.build_arrays();
+            s.material.diffuse_material = Vec3( 1.,0.,0. );
+            s.material.specular_material = Vec3( 1.,0.,0. );
+            s.material.shininess = 16;
+        }
+
+        { //Right Wall
+            squares.resize( squares.size() + 1 );
+            Square & s = squares[squares.size() - 1];
+            s.setQuad(Vec3(-1., -1., 0.), Vec3(1., 0, 0.), Vec3(0., 1, 0.), 2., 2.);
+            s.translate(Vec3(0., 0., -2.));
+            s.scale(Vec3(2., 2., 1.));
+            s.rotate_y(-90);
+            s.build_arrays();
+            s.material.diffuse_material = Vec3( 0.0,1.0,0.0 );
+            s.material.specular_material = Vec3( 0.0,1.0,0.0 );
+            s.material.shininess = 16;
+        }
+
+        { //Floor
+            squares.resize( squares.size() + 1 );
+            Square & s = squares[squares.size() - 1];
+            s.setQuad(Vec3(-1., -1., 0.), Vec3(1., 0, 0.), Vec3(0., 1, 0.), 2., 2.);
+            s.translate(Vec3(0., 0., -2.));
+            s.scale(Vec3(2., 2., 1.));
+            s.rotate_x(-90);
+            s.build_arrays();
+            s.material.diffuse_material = Vec3( 1.0,1.0,1.0 );
+            s.material.specular_material = Vec3( 1.0,1.0,1.0 );
+            s.material.shininess = 16;
+        }
+
+        { //Ceiling
+            squares.resize( squares.size() + 1 );
+            Square & s = squares[squares.size() - 1];
+            s.setQuad(Vec3(-1., -1., 0.), Vec3(1., 0, 0.), Vec3(0., 1, 0.), 2., 2.);
+            s.translate(Vec3(0., 0., -2.));
+            s.scale(Vec3(2., 2., 1.));
+            s.rotate_x(90);
+            s.build_arrays();
+            s.material.diffuse_material = Vec3( 1.0,1.0,1.0 );
+            s.material.specular_material = Vec3( 1.0,1.0,1.0 );
+            s.material.shininess = 16;
         }
 
     }
