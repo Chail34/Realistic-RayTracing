@@ -66,5 +66,10 @@ Testing/
 *.md
 !README.md
 
-# Compte rendu
+# Document annexes
 Compte_rendu/
+enonce/
+
+# Qt Creator
+CMakeLists.txt.user*
+.qtcreator/
